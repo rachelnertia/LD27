@@ -4,7 +4,7 @@
 love.filesystem.load('player.lua')()
 love.filesystem.load('pickup.lua')()
 
-gPickupWait = 0.25
+gPickupWait = 0.1
 
 gBlockWidth = 30
 
@@ -30,7 +30,7 @@ function love.update(dt)
 		if v.y < -v.h then table.remove(gPickups,i) end		
 	end
 	--
-	player:checkCollisions(dt)
+	--player:checkCollisions(dt)
 	--
 	if gCounter <= 0 then
 		gameOver = true

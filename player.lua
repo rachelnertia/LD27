@@ -1,7 +1,10 @@
 playerImage = love.graphics.newImage('player.png')
+bubbleImage = love.graphics.newImage('bubble.png')
 
 Player = {}
 Player.__index = Player
+
+gPlayerColor = {r = 171, g = 179, b = 202}
 
 function Player.create()
 	local player = {}
@@ -15,24 +18,31 @@ function Player.create()
 	player.yvel = 0
 	player.movespeed = 1500
 	player.canMove = true
+	player.trail = love.graphics.newParticleSystem(bubbleImage, 100)
+	player:trailSetup()
+	--player.trail:start()
+	
 	return player
 end
 
 function Player:update(dt)
 	
 	self:input()
-
+	self:checkCollisions(dt)
 	self:boundsCheck(dt)
 	self.x = self.x + (self.xvel * dt)
 	self.y = self.y + (self.yvel * dt)
+	
+	self.trail:setPosition(self.x, self.y)
+	self.trail:start()
+	self.trail:update(dt)
 	
 	
 end
 
 function Player:checkCollisions(dt)
 	for i, v in ipairs(gBlocks) do
-		if AABB((self.x+self.xvel*dt), (self.y+self.yvel*dt), self.w, self.h,
-			v.x, v.y, v.w, v.h) then
+		if AABB((self.x+self.xvel*dt), (self.y+self.yvel*dt), self.w, self.h, v.x, v.y, v.w, v.h) then
 			--handle collision
 			if self.xvel > 0 then self.x = v.x - self.w
 			elseif self.xvel < 0 then self.x = v.x + v.w
@@ -118,6 +128,24 @@ end
 
 function Player:draw()
 	--love.graphics.draw(playerImage, self.x, self.y)
-	love.graphics.setColor(171, 179, 202)
+	love.graphics.setColor(gPlayerColor.r, gPlayerColor.g, gPlayerColor.b)
 	love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+	--
+	love.graphics.draw(self.trail)
+end
+
+function Player:trailSetup()
+	self.trail:setEmissionRate(20)
+	self.trail:setLifetime(1)
+	self.trail:setParticleLife(4)
+	self.trail:setPosition(self.x, self.y)
+	self.trail:setDirection(0)
+	self.trail:setSpread(2)
+	self.trail:setSpeed(10, 30)
+	self.trail:setRadialAcceleration(10)
+	self.trail:setSizes(1)
+	self.trail:setSizeVariation(0.5)
+	self.trail:setColors(gPlayerColor.r,gPlayerColor.g,gPlayerColor.b, 255)
+	self.trail:stop()
+
 end
