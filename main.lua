@@ -11,6 +11,8 @@ function love.load()
 	player = Player.create()
 	--
 	love.graphics.setBackgroundColor(107, 118, 148)
+	scrWidth = love.graphics.getWidth()
+	scrHeight = love.graphics.getHeight()
 end
 
 function love.update(dt)
@@ -25,4 +27,7 @@ end
 
 function love.draw()
 	player:draw()
+	love.graphics.setColor(0xAB, 0xB3, 0xCA)
+	love.graphics.print("10 SCNDS IS A VRY LONG TIME", scrWidth/2, 0)
+	love.graphics.print("TIME: " .. math.ceil(gCounter), scrWidth/2, 10)
 end
