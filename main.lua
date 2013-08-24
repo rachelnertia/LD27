@@ -4,13 +4,71 @@
 love.filesystem.load('player.lua')()
 love.filesystem.load('pickup.lua')()
 
+gPickupWait = 0.25
+
 function love.load()
+	--math.randomseed(os.time())
+	math.randomseed(8372568)
 	love.graphics.setBackgroundColor(107, 118, 148)
 	scrWidth = love.graphics.getWidth()
 	scrHeight = love.graphics.getHeight()
-	-- counter for game time
+	--
+	reset()
+end
+
+function love.update(dt)
+	player:update(dt)
+	--
+	for i, v in ipairs(gPickups) do
+		v:update(dt)
+		-- remove it if it goes out of bounds
+		if v.x > scrWidth then table.remove(gPickups,i) end
+		if v.x < -v.w then table.remove(gPickups,i) end
+		if v.y > scrHeight then table.remove(gPickups,i) end
+		if v.y < -v.h then table.remove(gPickups,i) end		
+	end
+	--
+	checkCollisions()
+	--
+	if gCounter <= 0 then
+		gameOver = true
+	end
+	-- count down!
+	gCounter = gCounter - dt
+	gSpawnTimer = gSpawnTimer + dt
+	--
+	if gSpawnTimer >= gPickupWait then
+		spawnPickup()
+		gSpawnTimer = 0
+	end
+end
+
+function love.draw()
+	player:draw()
+	--
+	for i, v in ipairs(gPickups) do
+		v:draw()
+	end
+	--
+	love.graphics.setColor(0xFF, 0xB3, 0xCA)
+	love.graphics.print("10 SCNDS IS A VRY LONG TIME", scrWidth/2, 0)
+	love.graphics.print("TIME: " .. math.ceil(gCounter), scrWidth/2, 10)
+	--
+	drawDebug()
+end
+
+function love.keypressed(key, unicode)
+	if key == 'r' then
+		reset()
+	end
+end
+
+function reset()
+	--
 	gCounter = 10 
 	gameOver = false
+	--
+	gSpawnTimer = 0
 	--
 	player = Player.create()
 	player.x = scrWidth/2
@@ -21,36 +79,6 @@ function love.load()
 	--
 end
 
-function love.update(dt)
-	player:update(dt)
-	--
-	for i, v in ipairs(gPickups) do
-		v:update(dt)
-	end
-	--
-	checkCollisions()
-	--
-	if gCounter <= 0 then
-		gameOver = true
-	end
-	-- count down!
-	gCounter = gCounter - dt
-end
-
-function love.draw()
-	player:draw()
-	--
-	for i, v in ipairs(gPickups) do
-		v:draw()
-	end
-	--
-	love.graphics.setColor(0xAB, 0xB3, 0xCA)
-	love.graphics.print("10 SCNDS IS A VRY LONG TIME", scrWidth/2, 0)
-	love.graphics.print("TIME: " .. math.ceil(gCounter), scrWidth/2, 10)
-	--
-	drawDebug()
-end
-
 function drawDebug()
 	love.graphics.print("FPS: " .. love.timer.getFPS()
 		.. " delta: " .. love.timer.getDelta(), 0, 0)
@@ -58,6 +86,29 @@ end
 
 function spawnPickup()
 	local new = Pickup.create()
+	local edge = math.random(0,3)
+	if edge == 0 then
+		-- spawn on left
+		new.x = -new.w
+		new.y = math.random(0,scrHeight - new.h)
+		new.xvel = new.movespeed
+	elseif edge == 1 then
+		--spawn on right
+		new.x = scrWidth + new.w
+		new.y = math.random(0,scrHeight - new.h)
+		new.xvel = -new.movespeed
+	elseif edge == 2 then
+		--spawn on top
+		new.x = math.random(0, scrWidth - new.w)
+		new.y = -new.h
+		new.yvel = new.movespeed
+	elseif edge == 3 then
+		--spawn on bottom
+		new.x = math.random(0, scrWidth - new.w)
+		new.y = scrHeight + new.h
+		new.yvel = -new.movespeed
+	end
+	
 	table.insert(gPickups, new)
 end
 
@@ -67,14 +118,17 @@ function checkCollisions()
 			v.x, v.y, v.w, v.h) then
 			-- handle collision
 			gCounter = gCounter + 5
+			table.remove(gPickups, i)
+			--
+			player:stopMoving()
 		end
 	end
 end
 
 -- check for collision of two rectangles
 function AABB(x1, y1, w1, h1, x2, y2, w2, h2)
-	if math.abs(x2 - x1) < (w1 + w2) then
-		if math.abs(y2 - y1) < (h1 + h2) then
+	if math.abs(x2 - x1) < (w1) then
+		if math.abs(y2 - y1) < (h1) then
 			return true
 		end
 	end

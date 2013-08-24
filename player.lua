@@ -1,3 +1,5 @@
+playerImage = love.graphics.newImage('player.png')
+
 Player = {}
 Player.__index = Player
 
@@ -83,6 +85,7 @@ end
 --function Player:checkCollisions
 
 function Player:draw()
-	love.graphics.setColor(171, 179, 202)
-	love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+	love.graphics.draw(playerImage, self.x, self.y)
+	--love.graphics.setColor(171, 179, 202)
+	--love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
 end
