@@ -1,5 +1,6 @@
 playerImage = love.graphics.newImage('player.png')
 bubbleImage = love.graphics.newImage('bubble.png')
+starImage = love.graphics.newImage('star.png')
 
 Player = {}
 Player.__index = Player
@@ -18,7 +19,7 @@ function Player.create()
 	player.yvel = 0
 	player.movespeed = 1500
 	player.canMove = true
-	player.trail = love.graphics.newParticleSystem(bubbleImage, 100)
+	--player.trail = love.graphics.newParticleSystem(bubbleImage, 100)
 	player:trailSetup()
 	--player.trail:start()
 	
@@ -33,7 +34,7 @@ function Player:update(dt)
 	self.x = self.x + (self.xvel * dt)
 	self.y = self.y + (self.yvel * dt)
 	
-	self.trail:setPosition(self.x, self.y)
+	self.trail:setPosition(self.x + self.w/2, self.y + self.h/2)
 	self.trail:start()
 	self.trail:update(dt)
 	
@@ -59,9 +60,9 @@ function Player:checkCollisions(dt)
 			v.x, v.y, v.w, v.h) then
 			-- handle collision
 			if v.type == 'time' then
-				gCounter = gCounter + 5
+				gCounter = gCounter + gPickupTimeValue
 			elseif v.type == 'score' then
-				gScore = gScore + 100
+				gScore = gScore + gPickupScoreValue
 			end
 			table.remove(gPickups, i)
 			--
@@ -135,17 +136,19 @@ function Player:draw()
 end
 
 function Player:trailSetup()
+	
+	self.trail = love.graphics.newParticleSystem(starImage, 200)
 	self.trail:setEmissionRate(20)
 	self.trail:setLifetime(1)
-	self.trail:setParticleLife(4)
+	self.trail:setParticleLife(2)
 	self.trail:setPosition(self.x, self.y)
-	self.trail:setDirection(0)
-	self.trail:setSpread(2)
+	--self.trail:setDirection()
+	self.trail:setSpread(5)
 	self.trail:setSpeed(10, 30)
 	self.trail:setRadialAcceleration(10)
 	self.trail:setSizes(1)
 	self.trail:setSizeVariation(0.5)
-	self.trail:setColors(gPlayerColor.r,gPlayerColor.g,gPlayerColor.b, 255)
+	self.trail:setColors(gPlayerColor.r,gPlayerColor.g,gPlayerColor.b, 255, gPlayerColor.r,gPlayerColor.g,gPlayerColor.b, 0)
 	self.trail:stop()
 
 end

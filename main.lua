@@ -5,15 +5,19 @@ love.filesystem.load('player.lua')()
 love.filesystem.load('pickup.lua')()
 
 gPickupWait = 0.1
+gPickupTimeValue = 2
+gPickupScoreValue = 100
 
 gBlockWidth = 30
 
 function love.load()
 	--math.randomseed(os.time())
 	math.randomseed(8372568)
+	love.graphics.setColorMode('modulate')
 	love.graphics.setBackgroundColor(107, 118, 148)
 	scrWidth = love.graphics.getWidth()
 	scrHeight = love.graphics.getHeight()
+	
 	--
 	reset()
 end
@@ -57,10 +61,7 @@ function love.draw()
 	--
 	player:draw()
 	--
-	love.graphics.setColor(0xFF, 0xB3, 0xCA)
-	love.graphics.print("10 SCNDS IS A VRY LONG TIME", scrWidth/2, 0)
-	love.graphics.print("TIME: " .. math.ceil(gCounter), scrWidth/2, 10)
-	love.graphics.print("SCORE: " .. gScore, scrWidth/2, 20)
+	drawInfo()
 	--
 	drawDebug()
 end
@@ -100,7 +101,14 @@ end
 
 function drawDebug()
 	love.graphics.print("FPS: " .. love.timer.getFPS()
-		.. " delta: " .. love.timer.getDelta(), 0, 0)
+		.. " delta: " .. love.timer.getDelta(), scrWidth-150, 0)
+end
+
+function drawInfo()
+	love.graphics.setColor(0xFF, 0xB3, 0xCA)
+	love.graphics.print("ARROW KEYS MOVE R RESETS", 0, 0)
+	love.graphics.print("TIME: " .. math.ceil(gCounter), 0, 10)
+	love.graphics.print("SCORE: " .. gScore, 0, 20)
 end
 
 function spawnPickup()
@@ -130,31 +138,6 @@ function spawnPickup()
 	if math.random(0,1) == 1 then new.type = 'score' end
 	
 	table.insert(gPickups, new)
-end
-
-function checkCollisions()
-	for i, v in ipairs(gBlocks) do
-		if AABB(player.x, player.y, player.w, player.h,
-			v.x, v.y, v.w, v.h) then
-			-- handle collision
-			player:stopMoving()
-		end
-	end
-	--
-	for i, v in ipairs(gPickups) do
-		if AABB(player.x, player.y, player.w, player.h,
-			v.x, v.y, v.w, v.h) then
-			-- handle collision
-			if v.type == 'time' then
-				gCounter = gCounter + 5
-			elseif v.type == 'score' then
-				gScore = gScore + 100
-			end
-			table.remove(gPickups, i)
-			--
-			player:stopMoving()
-		end
-	end
 end
 
 -- check for collision of two rectangles
