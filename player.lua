@@ -80,6 +80,8 @@ function Player:input()
 	end
 end
 
+--function Player:checkCollisions
+
 function Player:draw()
 	love.graphics.setColor(171, 179, 202)
 	love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
