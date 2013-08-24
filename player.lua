@@ -13,7 +13,7 @@ function Player.create()
 	player.h = 25
 	player.xvel = 0
 	player.yvel = 0
-	player.movespeed = 1000
+	player.movespeed = 1500
 	player.canMove = true
 	return player
 end
@@ -22,27 +22,59 @@ function Player:update(dt)
 	
 	self:input()
 
+	self:boundsCheck(dt)
 	self.x = self.x + (self.xvel * dt)
 	self.y = self.y + (self.yvel * dt)
 	
-	self:boundsCheck()
 	
 end
 
-function Player:boundsCheck()
-	if self.x > scrWidth then 
+function Player:checkCollisions(dt)
+	for i, v in ipairs(gBlocks) do
+		if AABB((self.x+self.xvel*dt), (self.y+self.yvel*dt), self.w, self.h,
+			v.x, v.y, v.w, v.h) then
+			--handle collision
+			if self.xvel > 0 then self.x = v.x - self.w
+			elseif self.xvel < 0 then self.x = v.x + v.w
+			elseif self.yvel > 0 then self.y = v.y - self.h
+			elseif self.yvel < 0 then self.y = v.y + v.w
+			end			
+			
+			self:stopMoving()
+		end
+	end
+	--
+	for i, v in ipairs(gPickups) do
+		if AABB(self.x, self.y, self.w, self.h,
+			v.x, v.y, v.w, v.h) then
+			-- handle collision
+			if v.type == 'time' then
+				gCounter = gCounter + 5
+			elseif v.type == 'score' then
+				gScore = gScore + 100
+			end
+			table.remove(gPickups, i)
+			--
+			self:stopMoving()
+		end
+	end
+
+end
+
+function Player:boundsCheck(dt)
+	if self.x + self.xvel*dt > scrWidth then 
 		self.x = scrWidth - self.w 
 		self:stopMoving()
 	end
-	if self.x < 0 then 
+	if self.x + self.xvel*dt < 0 then 
 		self.x = 0
 		self:stopMoving()	
 	end
-	if self.y > scrHeight then 
+	if self.y + self.yvel*dt > scrHeight then 
 		self.y = scrHeight - self.h 
 		self:stopMoving()
 	end
-	if self.y < 0 then 
+	if self.y + self.yvel*dt < 0 then 
 		self.y = 0 
 		self:stopMoving()
 	end

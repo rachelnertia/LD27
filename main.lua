@@ -30,7 +30,7 @@ function love.update(dt)
 		if v.y < -v.h then table.remove(gPickups,i) end		
 	end
 	--
-	checkCollisions()
+	player:checkCollisions(dt)
 	--
 	if gCounter <= 0 then
 		gameOver = true
