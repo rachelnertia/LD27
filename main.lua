@@ -6,6 +6,8 @@ love.filesystem.load('pickup.lua')()
 
 gPickupWait = 0.25
 
+gBlockWidth = 30
+
 function love.load()
 	--math.randomseed(os.time())
 	math.randomseed(8372568)
@@ -44,15 +46,21 @@ function love.update(dt)
 end
 
 function love.draw()
-	player:draw()
+	for i, v in ipairs(gBlocks) do
+		love.graphics.setColor(0xFF, 0xFF, 0xFF)
+		love.graphics.rectangle('fill', v.x, v.y, v.w, v.h)
+	end
 	--
 	for i, v in ipairs(gPickups) do
 		v:draw()
 	end
 	--
+	player:draw()
+	--
 	love.graphics.setColor(0xFF, 0xB3, 0xCA)
 	love.graphics.print("10 SCNDS IS A VRY LONG TIME", scrWidth/2, 0)
 	love.graphics.print("TIME: " .. math.ceil(gCounter), scrWidth/2, 10)
+	love.graphics.print("SCORE: " .. gScore, scrWidth/2, 20)
 	--
 	drawDebug()
 end
@@ -64,6 +72,8 @@ function love.keypressed(key, unicode)
 end
 
 function reset()
+	--
+	gScore = 0
 	--
 	gCounter = 10 
 	gameOver = false
@@ -77,6 +87,15 @@ function reset()
 	gPickups = {}
 	spawnPickup()
 	--
+	-- set obstacles
+	gBlocks = {}
+	for i = 1, 20, 1 do
+		gBlocks[i] = {}
+		gBlocks[i].x = math.abs(math.random(1, (scrWidth/gBlockWidth)-1)*gBlockWidth)
+		gBlocks[i].y = math.abs(math.random(1, (scrHeight/gBlockWidth)-1)*gBlockWidth)
+		gBlocks[i].w = gBlockWidth
+		gBlocks[i].h = gBlockWidth
+	end
 end
 
 function drawDebug()
@@ -108,16 +127,29 @@ function spawnPickup()
 		new.y = scrHeight + new.h
 		new.yvel = -new.movespeed
 	end
+	if math.random(0,1) == 1 then new.type = 'score' end
 	
 	table.insert(gPickups, new)
 end
 
 function checkCollisions()
+	for i, v in ipairs(gBlocks) do
+		if AABB(player.x, player.y, player.w, player.h,
+			v.x, v.y, v.w, v.h) then
+			-- handle collision
+			player:stopMoving()
+		end
+	end
+	--
 	for i, v in ipairs(gPickups) do
 		if AABB(player.x, player.y, player.w, player.h,
 			v.x, v.y, v.w, v.h) then
 			-- handle collision
-			gCounter = gCounter + 5
+			if v.type == 'time' then
+				gCounter = gCounter + 5
+			elseif v.type == 'score' then
+				gScore = gScore + 100
+			end
 			table.remove(gPickups, i)
 			--
 			player:stopMoving()

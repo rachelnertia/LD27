@@ -5,6 +5,7 @@ function Pickup.create()
 	local pickup = {}
 	setmetatable(pickup, Pickup)
 	--
+	pickup.type = 'time'
 	pickup.x = 0 
 	pickup.y = 0
 	pickup.w = 25
@@ -23,6 +24,10 @@ function Pickup:update(dt)
 end
 
 function Pickup:draw()
-	love.graphics.setColor(0x23, 0x33, 0x60)
+	if self.type == 'time' then
+		love.graphics.setColor(0x23, 0x33, 0x60)
+	elseif self.type == 'score' then
+		love.graphics.setColor(0xE6, 0xD6, 0x17)
+	end
 	love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
 end

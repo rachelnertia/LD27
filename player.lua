@@ -13,7 +13,7 @@ function Player.create()
 	player.h = 25
 	player.xvel = 0
 	player.yvel = 0
-	player.movespeed = 500
+	player.movespeed = 1000
 	player.canMove = true
 	return player
 end
@@ -85,7 +85,7 @@ end
 --function Player:checkCollisions
 
 function Player:draw()
-	love.graphics.draw(playerImage, self.x, self.y)
-	--love.graphics.setColor(171, 179, 202)
-	--love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+	--love.graphics.draw(playerImage, self.x, self.y)
+	love.graphics.setColor(171, 179, 202)
+	love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
 end
