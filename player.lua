@@ -51,7 +51,7 @@ function Player:checkCollisions(dt)
 			end			
 			
 			self:stopMoving()
-			love.audio.play(bumpSounds[math.random(1,#bumpSounds)])
+			if soundOn then love.audio.play(bumpSounds[math.random(1,#bumpSounds)]) end
 		end
 	end
 	--
@@ -61,13 +61,13 @@ function Player:checkCollisions(dt)
 			-- handle collision
 			if v.type == 'moretime' then
 				gCounter = gCounter + v.value
-				love.audio.play(timePickupSounds[math.random(1,#timePickupSounds)])
+				if soundOn then love.audio.play(timePickupSounds[math.random(1,#timePickupSounds)]) end
 			elseif v.type == 'lesstime' then
 				gCounter = gCounter - v.value
-				love.audio.play(timePickupSounds[math.random(1,#timePickupSounds)])
+				if soundOn then love.audio.play(timePickupSounds[math.random(1,#timePickupSounds)]) end
 			elseif v.type == 'score' then
 				gScore = gScore + v.value
-				love.audio.play(scorePickupSounds[math.random(1,#scorePickupSounds)])
+				if soundOn then love.audio.play(scorePickupSounds[math.random(1,#scorePickupSounds)]) end
 			end
 			table.remove(gPickups, i)
 			--

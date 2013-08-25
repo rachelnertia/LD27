@@ -6,13 +6,14 @@ love.filesystem.load('player.lua')()
 love.filesystem.load('pickup.lua')()
 --
 
-gPreviousScores = {}
+soundOn = true
+gamePaused = false
 
 
 function love.load()
-	--math.randomseed(os.time())
+	--
 	math.randomseed(os.time())
-	--love.graphics.setColorMode('replace')
+	--
 	love.graphics.setDefaultImageFilter('nearest', 'nearest')
 	love.graphics.setBackgroundColor(107, 118, 148)
 	--
@@ -37,42 +38,46 @@ function love.load()
 	--
 	tickSound = love.audio.newSource('tick1.ogg', 'static')
 	--
+	gPreviousScores = {}
+	--
+	
+	--
 	reset()
 end
 
 function love.update(dt)
 	if not gameOver then
-		gSecondCounter = gSecondCounter + dt
-		if gSecondCounter >= 1 then
-			gSecondCounter = 0
-			love.audio.play(tickSound)
-		end
-		--
-		player:update(dt)
-		--
-		for i, v in ipairs(gPickups) do
-			v:update(dt)
-			-- remove it if it goes out of bounds
-			if v.x > scrWidth + v.w then table.remove(gPickups,i) end
-			if v.x < -v.w then table.remove(gPickups,i) end
-			if v.y > scrHeight + v.w then table.remove(gPickups,i) end
-			if v.y < -v.h then table.remove(gPickups,i) end		
-		end
-		--
-		--player:checkCollisions(dt)
-		--
-		gSpawnTimer = gSpawnTimer + dt
-		--
-		if gSpawnTimer >= gPickupWait then
-			spawnPickup()
-			--love.audio.play(tickSound)
-			gSpawnTimer = 0
-		end
-		--
-		gCounter = gCounter - dt
-		if gCounter <= 0 then
-			gameOver = true
-			table.insert(gPreviousScores,1,gScore)
+		if not gamePaused then 
+			gSecondCounter = gSecondCounter + dt
+			if gSecondCounter >= 1 then
+				gSecondCounter = 0
+				if soundOn then love.audio.play(tickSound) end
+			end
+			--
+			player:update(dt)
+			--
+			for i, v in ipairs(gPickups) do
+				v:update(dt)
+				-- remove it if it goes out of bounds
+				if v.x > scrWidth + v.w then table.remove(gPickups,i) end
+				if v.x < -v.w then table.remove(gPickups,i) end
+				if v.y > scrHeight + v.w then table.remove(gPickups,i) end
+				if v.y < -v.h then table.remove(gPickups,i) end		
+			end
+			--
+			gSpawnTimer = gSpawnTimer + dt
+			--
+			if gSpawnTimer >= gPickupWait then
+				spawnPickup()
+				gSpawnTimer = 0
+			end
+			--
+			gCounter = gCounter - dt
+			if gCounter <= 0 then
+				gameOver = true
+				gamePaused = false -- although really how could it be paused
+				table.insert(gPreviousScores,1,gScore)
+			end
 		end
 	end
 end
@@ -100,6 +105,14 @@ function love.keypressed(key, unicode)
 	if key == 'r' then
 		reset()
 	end
+	if key == 'm' then
+		soundOn = not soundOn
+	end
+	if key == 'p' then
+		if not gameOver then
+			gamePaused = not gamePaused
+		end
+	end
 end
 
 function reset()
@@ -110,6 +123,7 @@ function reset()
 	--
 	gCounter = 10 
 	gameOver = false
+	gamePaused = false
 	--
 	gSpawnTimer = 0
 	--
@@ -143,7 +157,13 @@ end
 
 function drawInfo()
 	love.graphics.setColor(0xFF, 0xB3, 0xCA)
-	love.graphics.print("ARROW KEYS MOVE R RESETS", 0, 0)
+	love.graphics.print("ARROW KEYS MOVE R RESETS M TOGGLES SOUND P PAUSES", 0, 0)
+	if gamePaused then
+		love.graphics.print("GAME PAUSED", scrWidth/2, scrHeight/2 - 20, 0, 2, 2)
+	end
+	if gameOver then
+		love.graphics.print("GAME OVER", scrWidth/2, scrHeight/2 - 20, 0, 2, 2)
+	end
 	love.graphics.setColor(0x23, 0x33, 0x60)
 	love.graphics.print(math.ceil(gCounter), scrWidth/2, scrHeight/2, 0, 2,2)
 	love.graphics.setColor(0xE6, 0xD6, 0x17)
@@ -186,7 +206,11 @@ function spawnPickup()
 	if math.random(1,4) < 4 then 
 		new.type = 'score'
 		new.value = 100 + 100*math.floor(gCounter)
+		if math.floor(gCounter) > 10 then
+			new.value = 1000 - 100*math.floor(gCounter-10)
+		end
 		if new.value > 900 then new.value = 900 end
+		
 	else
 		new.value = math.random(1,10)
 		new.type = 'moretime'
