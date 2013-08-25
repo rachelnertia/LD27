@@ -1,4 +1,4 @@
-playerImage = love.graphics.newImage('player.png')
+--playerImage = love.graphics.newImage('player.png')
 starImage = love.graphics.newImage('star.png')
 
 Player = {}

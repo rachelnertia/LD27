@@ -1,16 +1,16 @@
-timePickupImage = love.graphics.newImage('timepickup.png')
-timePickupQuads = {
-	love.graphics.newQuad(0,0,25,25,250,25),
-	love.graphics.newQuad(25,0,25,25,250,25),
-	love.graphics.newQuad(50,0,25,25,250,25),
-	love.graphics.newQuad(75,0,25,25,250,25),
-	love.graphics.newQuad(100,0,25,25,250,25),
-	love.graphics.newQuad(125,0,25,25,250,25),
-	love.graphics.newQuad(150,0,25,25,250,25),
-	love.graphics.newQuad(175,0,25,25,250,25),
-	love.graphics.newQuad(200,0,25,25,250,25),
-	love.graphics.newQuad(225,0,25,25,250,25)
-}
+-- timePickupImage = love.graphics.newImage('timepickup.png')
+-- timePickupQuads = {
+	-- love.graphics.newQuad(0,0,25,25,250,25),
+	-- love.graphics.newQuad(25,0,25,25,250,25),
+	-- love.graphics.newQuad(50,0,25,25,250,25),
+	-- love.graphics.newQuad(75,0,25,25,250,25),
+	-- love.graphics.newQuad(100,0,25,25,250,25),
+	-- love.graphics.newQuad(125,0,25,25,250,25),
+	-- love.graphics.newQuad(150,0,25,25,250,25),
+	-- love.graphics.newQuad(175,0,25,25,250,25),
+	-- love.graphics.newQuad(200,0,25,25,250,25),
+	-- love.graphics.newQuad(225,0,25,25,250,25)
+-- }
 
 Pickup = {}
 Pickup.__index = Pickup
