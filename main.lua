@@ -22,6 +22,8 @@ function love.load()
 	--
 	gBlockWidth = scrWidth/20
 	gBlockHeight = scrHeight/20
+	--
+	blockImage = love.graphics.newImage('block.png')
 	-- load audio files
 	scorePickupSounds = {}
 	scorePickupSounds[1] = love.audio.newSource('scorepickup1.ogg', 'static')
@@ -84,8 +86,9 @@ end
 
 function love.draw()
 	for i, v in ipairs(gBlocks) do
-		love.graphics.setColor(0xFF, 0xFF, 0xFF)
-		love.graphics.rectangle('fill', v.x, v.y, v.w, v.h)
+		love.graphics.setColor(127, 138, 178)
+		--love.graphics.rectangle('fill', v.x, v.y, v.w, v.h)
+		love.graphics.draw(blockImage,v.x,v.y)
 	end
 	--
 	for i, v in ipairs(gPickups) do
@@ -179,8 +182,10 @@ function drawPreviousScores()
 	
 end
 
+-- spawn a new pickup (the things wot slide across the screen)
 function spawnPickup()
 	local new = Pickup.create()
+	-- first, determine which side of the screen it should come from
 	local edge = math.random(1,4)
 	if edge == 1 then
 		-- spawn on left
@@ -203,24 +208,37 @@ function spawnPickup()
 		new.y = scrHeight + new.h
 		new.yvel = new.movespeed * -1
 	end
+	-- next, decide what type it should be
+	-- 3/4 chance it'll be a score-pickup
 	if math.random(1,4) < 4 then 
 		new.type = 'score'
+		-- score pickups base their value on the current time
 		new.value = 100 + 100*math.floor(gCounter)
+		-- for maximum-value score pickups, the player should aim to keep the counter at around 10 seconds
 		if math.floor(gCounter) > 10 then
 			new.value = 1000 - 100*math.floor(gCounter-10)
+			-- but disallow negative score pickups
+			if new.value < 100 then 
+				new.value = 100 
+			end
 		end
-		if new.value > 900 then new.value = 900 end
-		
+		-- maximum value 900 (1000 doesn't fit on the box)
+		if new.value > 900 then 
+			new.value = 900 
+		end
 	else
+		-- 1/4 chance it'll be a time pickup
+		-- with a value between 1 and 10
 		new.value = math.random(1,10)
 		new.type = 'moretime'
+		-- if the counter is above 10 then there's a high chance (3/4) that the game will spawn penalty time pickups instead
 		if gCounter > 10 then
 			if math.random(1,4) < 4 then
 				new.type = 'lesstime'
 			end
 		end
 	end
-	
+	-- finally, add it to the list
 	table.insert(gPickups, new)
 end
 
