@@ -134,7 +134,7 @@ function reset()
 	--
 	player = Player.create()
 	player.x = scrWidth/2
-	player.y = scrHeight/2
+	player.y = scrHeight/2 - 30
 	--
 	gPickups = {}
 	spawnPickup()
@@ -167,7 +167,7 @@ function drawInfo()
 	if gameOver then
 		love.graphics.print("GAME OVER", scrWidth/2 - 40, scrHeight/2 - 20, 0, 2, 2)
 	end
-	love.graphics.setColor(0x23, 0x33, 0x60)
+	love.graphics.setColor(0xFF, 0xFF, 0xFF)
 	love.graphics.print(math.ceil(gCounter), scrWidth/2 - 10, scrHeight/2, 0, 2,2)
 	love.graphics.setColor(0xE6, 0xD6, 0x17)
 	love.graphics.print(gScore, scrWidth/2 - 10, scrHeight/2 + 20, 0, 2,2)

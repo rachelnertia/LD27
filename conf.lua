@@ -1,5 +1,5 @@
 function love.conf(t)
-	t.title = ""
+	t.title = "ludum dare 27 - squaredare"
 	t.author = "Inertia"
 	t.version = "0.8.0"
 	t.console = false
