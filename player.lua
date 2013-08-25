@@ -12,8 +12,8 @@ function Player.create()
 	--
 	player.x = 0 
 	player.y = 0
-	player.w = 25
-	player.h = 25
+	player.w = scrWidth/25
+	player.h = scrHeight/25
 	player.xvel = 0
 	player.yvel = 0
 	player.movespeed = 1500
@@ -51,6 +51,7 @@ function Player:checkCollisions(dt)
 			end			
 			
 			self:stopMoving()
+			love.audio.play(bumpSounds[math.random(1,#bumpSounds)])
 		end
 	end
 	--
@@ -58,10 +59,15 @@ function Player:checkCollisions(dt)
 		if AABB(self.x, self.y, self.w, self.h,
 			v.x, v.y, v.w, v.h) then
 			-- handle collision
-			if v.type == 'time' then
+			if v.type == 'moretime' then
 				gCounter = gCounter + v.value
+				love.audio.play(timePickupSounds[math.random(1,#timePickupSounds)])
+			elseif v.type == 'lesstime' then
+				gCounter = gCounter - v.value
+				love.audio.play(timePickupSounds[math.random(1,#timePickupSounds)])
 			elseif v.type == 'score' then
 				gScore = gScore + v.value
+				love.audio.play(scorePickupSounds[math.random(1,#scorePickupSounds)])
 			end
 			table.remove(gPickups, i)
 			--

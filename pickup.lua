@@ -19,15 +19,15 @@ function Pickup.create()
 	local pickup = {}
 	setmetatable(pickup, Pickup)
 	--
-	pickup.type = 'time'
+	pickup.type = 'moretime'
 	pickup.value = 1
 	pickup.x = 0 
 	pickup.y = 0
-	pickup.w = 25
-	pickup.h = 25
+	pickup.w = scrWidth/25
+	pickup.h = scrHeight/25
 	pickup.xvel = 0
 	pickup.yvel = 0
-	pickup.movespeed = 250
+	pickup.movespeed = 200
 	--
 	return pickup
 end
@@ -39,13 +39,22 @@ function Pickup:update(dt)
 end
 
 function Pickup:draw()
-	if self.type == 'time' then
+	if self.type == 'moretime' then
 		love.graphics.setColor(0x23, 0x33, 0x60)
-		--love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
-		love.graphics.drawq(timePickupImage, timePickupQuads[self.value], self.x, self.y)
+		love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+		love.graphics.setColor(0xFF, 0xFF, 0xFF)
+		love.graphics.print('+'..self.value, self.x, self.y+self.h/3)
+		--love.graphics.drawq(timePickupImage, timePickupQuads[self.value], self.x, self.y)
+	elseif self.type == 'lesstime' then
+		love.graphics.setColor(0xFB, 0x00, 0x00)
+		love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+		love.graphics.setColor(0xFF, 0xFF, 0xFF)
+		love.graphics.print('-'..self.value, self.x, self.y+self.h/3)
 	elseif self.type == 'score' then
 		love.graphics.setColor(0xE6, 0xD6, 0x17)
 		love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+		love.graphics.setColor(0,0,0)
+		love.graphics.print(self.value,self.x,self.y+self.h/3)
 	end
 	
 end
