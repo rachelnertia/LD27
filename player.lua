@@ -1,10 +1,10 @@
---playerImage = love.graphics.newImage('player.png')
+playerImage = love.graphics.newImage('player.png')
 starImage = love.graphics.newImage('star.png')
 
 Player = {}
 Player.__index = Player
 
-gPlayerColor = {r = 171, g = 179, b = 202}
+gPlayerColor = {r = 190, g = 180, b = 225}
 
 function Player.create()
 	local player = {}
@@ -18,7 +18,6 @@ function Player.create()
 	player.yvel = 0
 	player.movespeed = 1500
 	player.canMove = true
-	--player.trail = love.graphics.newParticleSystem(bubbleImage, 100)
 	player:trailSetup()
 	--player.trail:start()
 	
@@ -133,9 +132,9 @@ end
 --function Player:checkCollisions
 
 function Player:draw()
-	--love.graphics.draw(playerImage, self.x, self.y)
 	love.graphics.setColor(gPlayerColor.r, gPlayerColor.g, gPlayerColor.b)
-	love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+	love.graphics.draw(playerImage, self.x, self.y)
+	--love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
 	--
 	love.graphics.draw(self.trail)
 end

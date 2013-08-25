@@ -15,6 +15,7 @@ function love.load()
 	math.randomseed(os.time())
 	--
 	love.graphics.setDefaultImageFilter('nearest', 'nearest')
+	--love.graphics.setBackgroundColor(107, 118, 148)
 	love.graphics.setBackgroundColor(107, 118, 148)
 	--
 	scrWidth = love.graphics.getWidth()
@@ -154,23 +155,22 @@ function setupBlocks()
 end
 
 function drawDebug()
-	love.graphics.print("FPS: " .. love.timer.getFPS()
-		.. " delta: " .. love.timer.getDelta(), scrWidth-150, 0)
+	--love.graphics.print("FPS: " .. love.timer.getFPS() .. " delta: " .. love.timer.getDelta(), scrWidth-150, 0)
 end
 
 function drawInfo()
 	love.graphics.setColor(0xFF, 0xB3, 0xCA)
 	love.graphics.print("ARROW KEYS MOVE R RESETS M TOGGLES SOUND P PAUSES", 0, 0)
 	if gamePaused then
-		love.graphics.print("GAME PAUSED", scrWidth/2, scrHeight/2 - 20, 0, 2, 2)
+		love.graphics.print("GAME PAUSED", scrWidth/2 - 40, scrHeight/2 - 20, 0, 2, 2)
 	end
 	if gameOver then
-		love.graphics.print("GAME OVER", scrWidth/2, scrHeight/2 - 20, 0, 2, 2)
+		love.graphics.print("GAME OVER", scrWidth/2 - 40, scrHeight/2 - 20, 0, 2, 2)
 	end
 	love.graphics.setColor(0x23, 0x33, 0x60)
-	love.graphics.print(math.ceil(gCounter), scrWidth/2, scrHeight/2, 0, 2,2)
+	love.graphics.print(math.ceil(gCounter), scrWidth/2 - 10, scrHeight/2, 0, 2,2)
 	love.graphics.setColor(0xE6, 0xD6, 0x17)
-	love.graphics.print(gScore, scrWidth/2, scrHeight/2 + 20, 0, 2,2)
+	love.graphics.print(gScore, scrWidth/2 - 10, scrHeight/2 + 20, 0, 2,2)
 end
 
 function drawPreviousScores()
