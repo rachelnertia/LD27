@@ -12,8 +12,9 @@ gBlockWidth = 30
 
 function love.load()
 	--math.randomseed(os.time())
-	math.randomseed(8372568)
-	love.graphics.setColorMode('modulate')
+	math.randomseed(os.time())
+	--love.graphics.setColorMode('replace')
+	love.graphics.setDefaultImageFilter('nearest', 'nearest')
 	love.graphics.setBackgroundColor(107, 118, 148)
 	scrWidth = love.graphics.getWidth()
 	scrHeight = love.graphics.getHeight()
@@ -23,29 +24,32 @@ function love.load()
 end
 
 function love.update(dt)
-	player:update(dt)
-	--
-	for i, v in ipairs(gPickups) do
-		v:update(dt)
-		-- remove it if it goes out of bounds
-		if v.x > scrWidth then table.remove(gPickups,i) end
-		if v.x < -v.w then table.remove(gPickups,i) end
-		if v.y > scrHeight then table.remove(gPickups,i) end
-		if v.y < -v.h then table.remove(gPickups,i) end		
-	end
-	--
-	--player:checkCollisions(dt)
-	--
-	if gCounter <= 0 then
-		gameOver = true
-	end
-	-- count down!
-	gCounter = gCounter - dt
-	gSpawnTimer = gSpawnTimer + dt
-	--
-	if gSpawnTimer >= gPickupWait then
-		spawnPickup()
-		gSpawnTimer = 0
+	if not gameOver then
+		player:update(dt)
+		--
+		for i, v in ipairs(gPickups) do
+			v:update(dt)
+			-- remove it if it goes out of bounds
+			if v.x > scrWidth then table.remove(gPickups,i) end
+			if v.x < -v.w then table.remove(gPickups,i) end
+			if v.y > scrHeight then table.remove(gPickups,i) end
+			if v.y < -v.h then table.remove(gPickups,i) end		
+		end
+		--
+		--player:checkCollisions(dt)
+		--
+		if gCounter <= 0 then
+			gameOver = true
+		end
+		-- count down!
+		gCounter = gCounter - dt
+		if gCounter < 0 then gameOver = true end
+		gSpawnTimer = gSpawnTimer + dt
+		--
+		if gSpawnTimer >= gPickupWait then
+			spawnPickup()
+			gSpawnTimer = 0
+		end
 	end
 end
 
@@ -81,6 +85,7 @@ function reset()
 	--
 	gSpawnTimer = 0
 	--
+	--
 	player = Player.create()
 	player.x = scrWidth/2
 	player.y = scrHeight/2
@@ -90,10 +95,10 @@ function reset()
 	--
 	-- set obstacles
 	gBlocks = {}
-	for i = 1, 20, 1 do
+	for i = 1, 30, 1 do
 		gBlocks[i] = {}
-		gBlocks[i].x = math.abs(math.random(1, (scrWidth/gBlockWidth)-1)*gBlockWidth)
-		gBlocks[i].y = math.abs(math.random(1, (scrHeight/gBlockWidth)-1)*gBlockWidth)
+		gBlocks[i].x = math.abs(math.random(0, (scrWidth/gBlockWidth))*gBlockWidth)
+		gBlocks[i].y = math.abs(math.random(0, (scrHeight/gBlockWidth))*gBlockWidth)
 		gBlocks[i].w = gBlockWidth
 		gBlocks[i].h = gBlockWidth
 	end
@@ -107,8 +112,10 @@ end
 function drawInfo()
 	love.graphics.setColor(0xFF, 0xB3, 0xCA)
 	love.graphics.print("ARROW KEYS MOVE R RESETS", 0, 0)
-	love.graphics.print("TIME: " .. math.ceil(gCounter), 0, 10)
-	love.graphics.print("SCORE: " .. gScore, 0, 20)
+	love.graphics.setColor(0x23, 0x33, 0x60)
+	love.graphics.print(math.ceil(gCounter), scrWidth/2, scrHeight/2, 0, 2,2)
+	love.graphics.setColor(0xE6, 0xD6, 0x17)
+	love.graphics.print(gScore, scrWidth/2, scrHeight/2 + 20, 0, 2,2)
 end
 
 function spawnPickup()
@@ -135,7 +142,14 @@ function spawnPickup()
 		new.y = scrHeight + new.h
 		new.yvel = -new.movespeed
 	end
-	if math.random(0,1) == 1 then new.type = 'score' end
+	if math.random(0,1) == 0 then 
+		new.type = 'score'
+		new.value = 100
+	else
+		new.type = 'time'
+		new.value = math.random(1,2)
+		
+	end
 	
 	table.insert(gPickups, new)
 end

@@ -1,5 +1,4 @@
 playerImage = love.graphics.newImage('player.png')
-bubbleImage = love.graphics.newImage('bubble.png')
 starImage = love.graphics.newImage('star.png')
 
 Player = {}
@@ -60,9 +59,9 @@ function Player:checkCollisions(dt)
 			v.x, v.y, v.w, v.h) then
 			-- handle collision
 			if v.type == 'time' then
-				gCounter = gCounter + gPickupTimeValue
+				gCounter = gCounter + v.value
 			elseif v.type == 'score' then
-				gScore = gScore + gPickupScoreValue
+				gScore = gScore + v.value
 			end
 			table.remove(gPickups, i)
 			--
@@ -148,7 +147,7 @@ function Player:trailSetup()
 	self.trail:setRadialAcceleration(10)
 	self.trail:setSizes(1)
 	self.trail:setSizeVariation(0.5)
-	self.trail:setColors(gPlayerColor.r,gPlayerColor.g,gPlayerColor.b, 255, gPlayerColor.r,gPlayerColor.g,gPlayerColor.b, 0)
+	self.trail:setColors(gPlayerColor.r,gPlayerColor.g,gPlayerColor.b, 128, gPlayerColor.r,gPlayerColor.g,gPlayerColor.b, 0)
 	self.trail:stop()
 
 end
