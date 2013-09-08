@@ -117,6 +117,16 @@ function love.keypressed(key, unicode)
 			gamePaused = not gamePaused
 		end
 	end
+	--
+	if key == 'right' then
+		player:startMoving('right')
+	elseif key == 'left' then
+		player:startMoving('left')
+	elseif key == 'down' then
+		player:startMoving('down')
+	elseif key == 'up' then
+		player:startMoving('up')
+	end
 end
 
 function reset()

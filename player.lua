@@ -26,9 +26,10 @@ end
 
 function Player:update(dt)
 	
-	self:input()
+	--self:input()
 	self:checkCollisions(dt)
 	self:boundsCheck(dt)
+	--
 	self.x = self.x + (self.xvel * dt)
 	self.y = self.y + (self.yvel * dt)
 	
@@ -96,17 +97,19 @@ function Player:boundsCheck(dt)
 end
 
 function Player:startMoving(dir)
-	self.canMove = false
-	--
-	if dir == 'right' then
-		self.xvel = self.movespeed
-	elseif dir == 'left' then
-		self.xvel = -self.movespeed
-	elseif dir == 'down' then
-		self.yvel = self.movespeed
-	elseif dir == 'up' then
-		self.yvel = -self.movespeed
+	if self.canMove then
+		if dir == 'right' then
+			self.xvel = self.movespeed
+		elseif dir == 'left' then
+			self.xvel = -self.movespeed
+		elseif dir == 'down' then
+			self.yvel = self.movespeed
+		elseif dir == 'up' then
+			self.yvel = -self.movespeed
+		end
 	end
+	--
+	self.canMove = false
 end
 
 function Player:stopMoving()
