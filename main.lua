@@ -14,7 +14,8 @@ function love.load()
 	--
 	math.randomseed(os.time())
 	--
-	love.graphics.setDefaultImageFilter('nearest', 'nearest')
+	--love.graphics.setDefaultImageFilter('nearest', 'nearest')
+	love.graphics.setDefaultFilter('nearest', 'nearest')
 	--love.graphics.setBackgroundColor(107, 118, 148)
 	love.graphics.setBackgroundColor(107, 118, 148)
 	--

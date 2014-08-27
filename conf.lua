@@ -1,3 +1,5 @@
+io.stdout:setvbuf("no")
+
 function love.conf(t)
 	t.title = "ludum dare 27 - squaredare"
 	t.author = "Inertia"
